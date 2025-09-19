@@ -5,7 +5,7 @@
 - [Algoritmo Idealizado](#algoritmo-idealizado)
 - [Algoritmo Realista](#algoritmo-realista)
 - [Complejidad](#complejidad)
-- [Uso de IA](#uso-de-IA)
+- [Uso de IA](#uso-de-la-IA)
 - [Conclusiones](#conclusiones)
 ## Autores
 - Alberto Sastre Zorrilla.
