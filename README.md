@@ -82,6 +82,7 @@ El bucle for (for (j = 1; j < n; j++)) al tener dentro asignaciones simples como
 Siendo inicio.length = n, 
 n/j=1 Σ1=n->O(n) esto nos da la complejidad del bucle for.
 Y sumando las complejidades del programa nos da: O(n)+O(1) = Complejidad O(n)
+
 (1)
 ### Algoritmo realista (seleccionarActividadesRealista)
 Primero se llama al subprograma 'ordenar(f)'.
@@ -92,6 +93,7 @@ El subprograma 'ordenar' tiene una inicialización O(1) y un bucle for que tiene
 El bucle principal de inserción contiene un bucle for que llega hasta n-1 iteraciones y en su interior anidado un bucle while. 
 La fórmula para calcular la suma de los primeros n-1 enteros es:
 T = n-1/i=1 Σi = n(n-1)/2 = (n^2-n)/2 y nos quedamos con el número más grande que es n^2. Por lo tanto al sumar las complejidades del programa al completo sacamos que O(n)+O(1)+O(n^2) = Complejidad O(n^2).
+
 (2)
 ## Uso de la IA
 Para esta práctica hemos usado la IA como consultora, especialmente para que nos ayudase a entender el problema de la ordenación y nos ha ayudado a hacer el Informe más académico.
