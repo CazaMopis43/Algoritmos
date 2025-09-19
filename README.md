@@ -75,6 +75,7 @@ El bucle for (for (j = 1; j < n; j++)) al tener dentro asignaciones simples como
 Siendo inicio.length = n, 
 n/j=1 Σ1=n->O(n) esto nos da la complejidad del bucle for.
 Y sumando las complejidades del programa nos da: O(n)+O(1) = Complejidad O(n)
+![Algoritmo idealizado](https://github.com/AlfonsoRodr/AIS/blob/main/Pictures/TestCheck2.png)
 ### Algoritmo realista (seleccionarActividadesRealista)
 Primero se llama al subprograma 'ordenar(f)'.
 Se crea un array booleano (boolean[] seleccionadas = new boolean[c.length];) que tiene una complejidad de O(n).
