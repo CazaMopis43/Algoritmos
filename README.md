@@ -75,7 +75,7 @@ El bucle for (for (j = 1; j < n; j++)) al tener dentro asignaciones simples como
 Siendo inicio.length = n, 
 n/j=1 Σ1=n->O(n) esto nos da la complejidad del bucle for.
 Y sumando las complejidades del programa nos da: O(n)+O(1) = Complejidad O(n)
-![Algoritmo idealizado](https://github.com/AlfonsoRodr/AIS/blob/main/Pictures/TestCheck2.png)
+![Algoritmo idealizado](https://github.com/CazaMopis43/Algoritmos/blob/main/Ideal.jpg)
 ### Algoritmo realista (seleccionarActividadesRealista)
 Primero se llama al subprograma 'ordenar(f)'.
 Se crea un array booleano (boolean[] seleccionadas = new boolean[c.length];) que tiene una complejidad de O(n).
@@ -86,7 +86,7 @@ El bucle principal de inserción contiene un bucle for que llega hasta n-1 itera
 
 La fórmula para calcular la suma de los primeros n-1 enteros es:
 T = n-1/i=1 Σi = n(n-1)/2 = (n^2-n)/2 y nos quedamos con el número más grande que es n^2. Por lo tanto al sumar las complejidades del programa al completo sacamos que O(n)+O(1)+O(n^2) = Complejidad O(n^2).
-
+![Algoritmo Realista](https://github.com/CazaMopis43/Algoritmos/blob/main/Ideal.jpg)
 ## Uso de la IA
 Para esta práctica hemos usado la Ia como consultora, especialmente para que nos ayudase a entender el problema de la ordenación y nos ha ayudado a hacer el Informe más académico.
 ## Conclusiones
