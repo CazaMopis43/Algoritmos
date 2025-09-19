@@ -1,5 +1,12 @@
 # Algoritmos Avanzados
 ## Práctica 1
+## Table of Contents
+- [Objetivos](#objetivos)
+- [Algoritmo Idealizado](#algoritmo-idealizado)
+- [Algoritmo Realista](#algoritmo-realista)
+- [Complejidad](#complejidad)
+- [Uso de IA](#uso-de-IA)
+- [Conclusiones](#conclusiones)
 ## Autores
 - Alberto Sastre Zorrilla.
 - Marc Burgos Ucendo.
