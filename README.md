@@ -11,7 +11,7 @@
 - Alberto Sastre Zorrilla.
 - Marc Burgos Ucendo.
 ## Objetivos 
-Para esta primera práctica nuestro objetivo es familiarizarnos con el uso de los Algoritmos Voraces. Para ello se nos ha propuesto relizar un algoritmo que nos resuelva horarios para que no colisionen dados unos tiempos de Inicio y Fin de las tareas.
+Para esta primera práctica nuestro objetivo es familiarizarnos con el uso de los Algoritmos Voraces. Para ello se nos ha propuesto realizar un algoritmo que nos resuelva horarios para que no colisionen dados unos tiempos de Inicio y Fin de las tareas.
 ## Algoritmo Idealizado
 En este caso se nos dice que debemos suponer que los tiempos de las actividades se nos dan ya ordenados, de esta forma podemos realizar la tarea más facilmente. Para poder resolver el ejercicio solo deberemos crear el array de booleanos que deberemos devolver como respuesta y seleccionar el primer elemento. A continuación el bucle servirá para recorrer la lista, este tendrá una condición para asegurarse de que la siguiente accion seleccionada(en nuestro caso la acción j) es factible. Si lo es pondremos a True la posición j de la solución y seleccionaremos el elemento j. En caso contrario se marcará a False y pasaremos a la siguiente.
 ````java
@@ -32,7 +32,7 @@ public static boolean[] seleccionarActividadesIdeal(int[] c, int[] f) {
     }
 ````
 ## Algoritmo Realista
-Como en la vida misma las cosas nunca suceden como queremos, por tanto en esta versión del algoritmo no tendremos los tiempos ordenados, esto será un inconveniente que resolveremos con un método auxiliar. Este método nos ayudará a ordenar las actividades usando los indices, primero se creará un array con los indices , posteriormente se utiliza un insertion sort para ordenar el array. El resto del código es idéntico al anterior , ya que se ha solucionado el problema que los diferencia con la llamada al método.
+Como en la vida misma las cosas nunca suceden como queremos, por tanto en esta versión del algoritmo no tendremos los tiempos ordenados, esto será un inconveniente que resolveremos con un método auxiliar. Este método nos ayudará a ordenar las actividades usando los índices, primero se creará un array con los índices , posteriormente se utiliza un insertion sort para ordenar el array. El resto del código es idéntico al anterior , ya que se ha solucionado el problema que los diferencia con la llamada al método.
 ````java
 public static boolean[] seleccionarActividadesRealista(int[] c, int[] f) {
     int[] indices = ordenar(f);
@@ -87,7 +87,7 @@ Y sumando las complejidades del programa nos da: O(n)+O(1) = Complejidad O(n)
 Primero se llama al subprograma 'ordenar(f)'.
 Se crea un array booleano (boolean[] seleccionadas = new boolean[c.length];) que tiene una complejidad de O(n).
 Las asignaciones lineales como (seleccionadas[indices[0]] = true;) tienen una complejidad de O(1). 
-El bucle for (for (i = 1; i < indices.length; i++)) contiene dentro de sí, comparaciones y asignaciones, que tienen una complejidad de O(1)
+El bucle for (for (i = 1; i < indices.length; i++)) contiene dentro de sí, comparaciones y asignaciones, que tienen una complejidad de O(1).
 El subprograma 'ordenar' tiene una inicialización O(1) y un bucle for que tiene una complejidad de O(n).
 El bucle principal de inserción contiene un bucle for que llega hasta n-1 iteraciones y en su interior anidado un bucle while. 
 
