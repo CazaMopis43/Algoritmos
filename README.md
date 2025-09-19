@@ -1,7 +1,7 @@
 # Algoritmos Avanzados
 ## Práctica 1
 ## Authors
-- Alfonso Rodríguez Gutt.
+- Alberto Sastre Zorrilla.
 - Marc Burgos Ucendo.
 ## Objetivos 
 Para esta primera práctica nuestro objetivo es familiarizarnos con el uso de los Algoritmos Voraces. Para ello se nos ha propuesto relizar un algoritmo que nos resuelva horarios para que no colisionen dados unos tiempos de Inicio y Fin de las tareas.
@@ -23,4 +23,44 @@ public static boolean[] seleccionarActividadesIdeal(int[] c, int[] f) {
         }
         return seleccionadas;
     }
+````
+## Algoritmo Realista
+Como en la vida misma las cosas nunca suceden como queremos, por tanto en esta versión del algoritmo no tendremos los tiempos ordenados, esto será un inconveniente que resolveremos con un método auxiliar. Este método nos ayudará a ordenar las actividades usando los indices, primero se creará un array con los indices , posteriormente se utiliza un insertion sort para ordenar el array. El resto del código es idéntico al anterior , ya que se ha solucionado el problema que los diferencia con la llamada al método.
+````java
+public static boolean[] seleccionarActividadesRealista(int[] c, int[] f) {
+    int[] indices = ordenar(f);
+
+    boolean[] seleccionadas = new boolean[c.length];
+    seleccionadas[indices[0]] = true;
+    int ultimaSeleccionada = indices[0];
+
+    for (int i = 1; i < indices.length; i++) {
+        int indiceActual = indices[i];
+        if (c[indiceActual] >= f[ultimaSeleccionada]) {
+            seleccionadas[indiceActual] = true;
+            ultimaSeleccionada = indiceActual;
+        } else {
+            seleccionadas[indiceActual] = false;
+        }
+    }
+
+    return seleccionadas;
+}
+
+private static int[] ordenar(int[] arr) {
+    int[] indices = new int[arr.length];
+    for (int i = 0; i < arr.length; i++) {
+        indices[i] = i;
+    }
+    for (int i = 1; i < arr.length; i++) {
+        int j = i;
+        int temp = indices[i];
+        while (j > 0 && arr[indices[j - 1]] > arr[temp]) {
+            indices[j] = indices[j - 1];
+            j--;
+        }
+        indices[j] = temp;
+    }
+    return indices;
+}
 ````
