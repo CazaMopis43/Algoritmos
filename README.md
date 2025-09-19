@@ -72,7 +72,7 @@ La reserva de array (boolean[] seleccionadas = new boolean[n]) tiene un coste de
 Las asignaciones (seleccionadas[0] = true y ultimaSeleccionada = 0) tienen un coste de O(1).
 El bucle for (for (j = 1; j < n; j++)) al tener dentro asignaciones simples como ifs, tiene una complejidad de O(n).
 
-Siendo inicio.length = n
+Siendo inicio.length = n, 
 n/j=1 Σ1=n->O(n) esto nos da la complejidad del bucle for.
 Y sumando las complejidades del programa nos da: O(n)+O(1) = Complejidad O(n)
 ### Algoritmo realista (seleccionarActividadesRealista)
