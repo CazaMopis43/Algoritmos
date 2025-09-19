@@ -86,7 +86,7 @@ El bucle principal de inserción contiene un bucle for que llega hasta n-1 itera
 
 La fórmula para calcular la suma de los primeros n-1 enteros es:
 T = n-1/i=1 Σi = n(n-1)/2 = (n^2-n)/2 y nos quedamos con el número más grande que es n^2. Por lo tanto al sumar las complejidades del programa al completo sacamos que O(n)+O(1)+O(n^2) = Complejidad O(n^2).
-![Algoritmo Realista](https://github.com/CazaMopis43/Algoritmos/blob/main/Ideal.jpg)
+![Algoritmo Realista](https://github.com/CazaMopis43/Algoritmos/blob/main/Real.jpg)
 ## Uso de la IA
 Para esta práctica hemos usado la Ia como consultora, especialmente para que nos ayudase a entender el problema de la ordenación y nos ha ayudado a hacer el Informe más académico.
 ## Conclusiones
