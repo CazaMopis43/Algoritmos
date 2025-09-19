@@ -64,3 +64,7 @@ private static int[] ordenar(int[] arr) {
     return indices;
 }
 ````
+## Uso de la IA
+Para esta práctica hemos usado la Ia como consultora, especialmente para que nos ayudase a entender el problema de la ordenación y nos ha ayudado a hacer el Informe más académico.
+## Conclusiones
+La realización de esta práctica ha permitido profundizar en la técnica de diseño de algoritmos voraces, en particular aplicada al problema clásico de selección de actividades. A través de la implementación de las dos versiones del algoritmo idealizada y realista se ha puesto de manifiesto la importancia que tiene el orden de los datos de entrada en la eficacia y corrección de la solución. Ya que en términos de complejidad, se ha podido comprobar que la fase de ordenación domina el coste total del algoritmo realista, manteniéndose en un orden de eficiencia aceptable para problemas de tamaño grande.
