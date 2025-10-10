@@ -3,9 +3,9 @@
 ## Table of Contents
 - [Objetivos](#objetivos)
 - [Especificación del Problema](#especificación-del-problema)
-- [Algoritmo Realista](#algoritmo-realista)
-- [Complejidad](#complejidad)
-- [Uso de IA](#uso-de-la-IA)
+- [Diseño e Implementación de Algoritmos Heurísticos](#diseño-e-implementación-de-algoritmos-heurísticos)
+- [Experimentación con la Optimalidad de los Algoritmos](#experimentación-con-la-optimalidad-de-los-algoritmos)
+- [Uso de la IA](#uso-de-la-ia)
 - [Conclusiones](#conclusiones)
 ## Autores
 - Alberto Sastre Zorrilla.
@@ -179,7 +179,7 @@ Al haber probado estos algoritmos con un numero de iteraciones no muy alto nos h
 
 ---
 
-## 5. Conclusiones
+### Conclusiones
 
 - Ambos algoritmos (`GreedyMaxBenefit` y `GreedyByPosition`) lograron **100% de optimalidad** en los 15 casos probados.
 - `GreedyMaxBenefit` aprovecha mejor los altos valores de `ps[i]`.
