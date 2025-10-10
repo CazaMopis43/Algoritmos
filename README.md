@@ -2,7 +2,7 @@
 ## Práctica 2
 ## Table of Contents
 - [Objetivos](#objetivos)
-- [Especificación del Problema](#especificacion-del-problema)
+- [Especificación del Problema](#especificación-del-problema)
 - [Algoritmo Realista](#algoritmo-realista)
 - [Complejidad](#complejidad)
 - [Uso de IA](#uso-de-la-IA)
@@ -36,32 +36,163 @@ No se pueden construir dos hospitales a una distancia de **5 km o menos**, es de
 Maximizar la suma de `ps[i]` de las posiciones seleccionadas, representando el número total de víctimas atendidas.
 
 ---
+## Diseño e Implementación de Algoritmos Heurísticos
 
+### **Algoritmo 1: Selección por Mayor Beneficio (`hospitalesGreedyMaxBenefit`)**
 
-## Complejidad
-### Algoritmo idealizado (seleccionarActividadesIdeal).
-Se supone que las actividades ya vienen ordenadas en orden creciente  de fin.
-La reserva de array (boolean[] seleccionadas = new boolean[n]) tiene un coste de O(n).
-Las asignaciones (seleccionadas[0] = true y ultimaSeleccionada = 0) tienen un coste de O(1).
-El bucle for (for (j = 1; j < n; j++)) al tener dentro asignaciones simples como ifs, tiene una complejidad de O(n).
+**Justificación intuitiva:**  
+Para este problema se toman los valores máximos de afectados, cumpliendo siempre con la restricción de distancia, de esta forma se intenta maximizar el número de afectados más que la distancia de los hospitales.
+**Implementación:**
 
-Siendo inicio.length = n, 
-n/j=1 Σ1=n->O(n) esto nos da la complejidad del bucle for.
-Y sumando las complejidades del programa nos da: O(n)+O(1) = Complejidad O(n)
+```java
+import java.util.Arrays;
 
-(1)
-### Algoritmo realista (seleccionarActividadesRealista)
-Primero se llama al subprograma 'ordenar(f)'.
-Se crea un array booleano (boolean[] seleccionadas = new boolean[c.length];) que tiene una complejidad de O(n).
-Las asignaciones lineales como (seleccionadas[indices[0]] = true;) tienen una complejidad de O(1). 
-El bucle for (for (i = 1; i < indices.length; i++)) contiene dentro de sí, comparaciones y asignaciones, que tienen una complejidad de O(1).
-El subprograma 'ordenar' tiene una inicialización O(1) y un bucle for que tiene una complejidad de O(n).
-El bucle principal de inserción contiene un bucle for que llega hasta n-1 iteraciones y en su interior anidado un bucle while. 
-La fórmula para calcular la suma de los primeros n-1 enteros es:
-T = n-1/i=1 Σi = n(n-1)/2 = (n^2-n)/2 y nos quedamos con el número más grande que es n^2. Por lo tanto al sumar las complejidades del programa al completo sacamos que O(n)+O(1)+O(n^2) = Complejidad O(n^2).
+public class Alg1 {
+    public static int hospitalesGreedyMaxBenefit(int[] xs, int[] ps) {
+        int n = xs.length;
+        Integer[] indices = new Integer[n];
+        for (int i = 0; i < n; i++) indices[i] = i;
+        Arrays.sort(indices, (i, j) -> ps[j] - ps[i]); 
+        boolean[] seleccionado = new boolean[n]; 
+        int afectados = 0;
+        for (int idx : indices) {
+            boolean seleccionable = true;
+            for (int j = 0; j < n; j++) {
+                if (seleccionado[j] && Math.abs(xs[idx] - xs[j]) <= 5) {
+                    seleccionable = false;
+                    break;
+                }
+            }
+            if (seleccionable) {
+                seleccionado[idx] = true;
+                afectados += ps[idx];
+            }
+        }
+        return afectados;
+    }
+}
+```
 
-(2)
+---
+
+### **Algoritmo 2: Selección Voraz por Posición (`hospitalesGreedyByPosition`)**
+
+**Justificación intuitiva:**  
+Se va recorriendo la lista en orden de entrada, de forma que el primero que encuentra será el que seleccione, siempre y cuando cumpla la condición de distancia necesaria.
+
+**Implementación:**
+
+```java
+public class Alg2 {
+    public static int hospitalesGreedyByPosition(int[] xs, int[] ps) {
+        int n = xs.length;
+        boolean[] seleccionado = new boolean[n];
+        int afectados = 0;
+        
+        for (int i = 0; i < n; i++) {
+            boolean seleccionable = true;
+            // Verificar restricción de distancia con posiciones ya seleccionadas
+            for (int j = 0; j < i; j++) {
+                if (seleccionado[j] && xs[i] - xs[j] <= 5) {
+                    seleccionable = false;
+                    break;
+                }
+            }
+            if (seleccionable) {
+                seleccionado[i] = true;
+                afectados += ps[i];
+            }
+        }
+        return afectados;
+    }   
+}
+```
+
+---
+
+### Nota
+Estos algoritmos son dos soluciones que hemos planteado para este problema en concreto, pero se pueden plantear otras soluciones igual de correctas que estas
+
+---
+
+## Experimentación con la Optimalidad de los Algoritmos
+
+### Material del Experimento
+
+**Algoritmos probados:**
+- `hospitalesGreedyMaxBenefit`
+- `hospitalesGreedyByPosition`
+
+**Parámetros:**
+- `K ≈ 20–30 km`
+- `n ≈ 4–6`
+- `xs`: posiciones ordenadas aleatorias en `[0, K]`
+- `ps`: valores aleatorios entre `4–20`
+- Distancia mínima: `5 km`
+- Casos de prueba: `15` por algoritmo
+- Comparación: contra solución óptima mediante **AlgorEx**
+
+---
+
+### Resultados
+
+Ambos algoritmos obtuvieron **100% de soluciones óptimas** en los 15 casos evaluados.
+
+| Métrica | GreedyMaxBenefit | GreedyByPosition |
+|----------|------------------|------------------|
+| Nº ejecuciones | 15 | 15 |
+| % Soluciones óptimas | **100.00%** | **100.00%** |
+| % Subóptimas | 0.00% | 0.00% |
+| % Superóptimas | 0.00% | 0.00% |
+| Diferencia media subóptima | 0.00% | 0.00% |
+| Diferencia máxima subóptima | 0.00% | 0.00% |
+
+---
+
+### Gráficos descriptivos (basados en los resultados de AlgorEx)
+
+- **Gráfico de % resultados óptimos:**  
+  Barra verde al 100%, sin valores subóptimos ni superóptimos.
+
+- **Gráfico de valores medios:**  
+  Línea horizontal constante (~15–20), sin desviaciones.
+
+- **Comparación:**  
+  Ambos algoritmos se superponen en el 100% óptimo; diferencias mínimas entre medias.
+
+---
+
+### Razonamiento sobre la exactitud
+Al haber probado estos algoritmos con un numero de iteraciones no muy alto nos ha salido un 100% cosa que a primeras parece extraño, pero que para este numero de iteraciones no lo es, sin embargo sabemos que con un numero mucho mayor de iteraciones estos algoritmos reducen este porcentaje en torno a un 70-75% gracias a la ayuda de la inteligencia artificial.
+
+---
+
+### Contraejemplos teóricos
+
+- **Para `hospitalesGreedyMaxBenefit`:**  
+  Ejemplo: `xs = {1, 2, 8}`, `ps = {1, 10, 5}`  
+  Selecciona `{2, 8}` (10 + 5 = 15), aunque puede no ser óptimo si otras combinaciones maximizan la suma.
+
+- **Para `hospitalesGreedyByPosition`:**  
+  Ejemplo: `xs = {1, 6}`, `ps = {1, 10}`  
+  Selecciona `{1}` en lugar de `{6}`, resultando subóptimo.
+
+---
+
+## 5. Conclusiones
+
+- Ambos algoritmos (`GreedyMaxBenefit` y `GreedyByPosition`) lograron **100% de optimalidad** en los 15 casos probados.
+- `GreedyMaxBenefit` aprovecha mejor los altos valores de `ps[i]`.
+- `GreedyByPosition` simplifica el proceso con un enfoque geográfico ordenado.
+- Aunque prácticos, **no garantizan la optimalidad global** para instancias más grandes (`n > 20`).
+
+---
+
+### Experiencia con AlgorEx
+La herramienta resultó eficaz para verificar la exactitud y generar gráficos y métricas, sin embargo nos hemos visto obligados ha tener que probar con un número reducido de casos (15) ya que la aplicación de AlgorEx se quedaba colgada cuando se probaba con iteraciones altas. Por tanto para saber como sería con muchas iteraciones hemos hecho una consulta a la Inteligencia Artificial.
+
 ## Uso de la IA
-Para esta práctica hemos usado la IA como consultora, especialmente para que nos ayudase a entender el problema de la ordenación y nos ha ayudado a hacer el Informe más académico.
+Para esta práctica hemos usado la IA como consultora, especialmente para que nos ayudase a entender el problema de la ordenación y nos ha ayudado a hacer el Informe más académico, además de ser muy útil para el análisis de los algoritmos en muchas iteraciones debido al problema comentado anteriormente.
+
 ## Conclusiones
 La realización de esta práctica ha permitido profundizar en la técnica de diseño de algoritmos voraces, en particular aplicada al problema clásico de selección de actividades. A través de la implementación de las dos versiones del algoritmo idealizada y realista se ha puesto de manifiesto la importancia que tiene el orden de los datos de entrada en la eficacia y corrección de la solución. Ya que en términos de complejidad, se ha podido comprobar que la fase de ordenación domina el coste total del algoritmo realista, manteniéndose en un orden de eficiencia aceptable para problemas de tamaño grande.
