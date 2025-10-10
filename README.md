@@ -1,8 +1,8 @@
 # Algoritmos Avanzados
-## Práctica 1
+## Práctica 2
 ## Table of Contents
 - [Objetivos](#objetivos)
-- [Algoritmo Idealizado](#algoritmo-idealizado)
+- [Especificación del Problema](#especificacion-del-problema)
 - [Algoritmo Realista](#algoritmo-realista)
 - [Complejidad](#complejidad)
 - [Uso de IA](#uso-de-la-IA)
@@ -11,66 +11,32 @@
 - Alberto Sastre Zorrilla.
 - Marc Burgos Ucendo.
 ## Objetivos 
-Para esta primera práctica nuestro objetivo es familiarizarnos con el uso de los Algoritmos Voraces. Para ello se nos ha propuesto realizar un algoritmo que nos resuelva horarios para que no colisionen dados unos tiempos de Inicio y Fin de las tareas.
-## Algoritmo Idealizado
-En este caso se nos dice que debemos suponer que los tiempos de las actividades se nos dan ya ordenados, de esta forma podemos realizar la tarea más fácilmente. Para poder resolver el ejercicio solo deberemos crear el array de booleanos que deberemos devolver como respuesta y seleccionar el primer elemento. A continuación el bucle servirá para recorrer la lista, este tendrá una condición para asegurarse de que la siguiente acción seleccionada (en nuestro caso la acción j) es factible. Si lo es, pondremos a True la posición j de la solución y seleccionaremos el elemento j. En caso contrario, se marcará a False y pasaremos a la siguiente.
-````java
-public static boolean[] seleccionarActividadesIdeal(int[] c, int[] f) {
-        boolean[] seleccionadas = new boolean[c.length];
-        seleccionadas[0] = true; 
-        int ultimaSeleccionada = 0;
+Para esta Segunda práctica nuestro objetivo es familiarizarnos con el uso de los Algoritmos Heurísticos. Para ello se nos ha propuesto resolver un problema de colocación de hospitales usando dos algoritmos heurísticos distintos.
+## Especificación del Problema
 
-        for (int j = 1; j < c.length; j++) {
-            if (c[j] >= f[ultimaSeleccionada]) { 
-                seleccionadas[j] = true;
-                ultimaSeleccionada = j;
-            } else {
-                seleccionadas[j] = false;
-            }
-        }
-        return seleccionadas;
-    }
-````
-## Algoritmo Realista
-Como en la vida misma las cosas nunca suceden como queremos, por tanto en esta versión del algoritmo no tendremos los tiempos ordenados, esto será un inconveniente que resolveremos con un método auxiliar. Este método nos ayudará a ordenar las actividades usando los índices, primero se creará un array con los índices, posteriormente se utiliza un insertion sort para ordenar el array. El resto del código es idéntico al anterior , ya que se ha solucionado el problema que los diferencia con la llamada al método.
-````java
-public static boolean[] seleccionarActividadesRealista(int[] c, int[] f) {
-    int[] indices = ordenar(f);
+### Precondición
 
-    boolean[] seleccionadas = new boolean[c.length];
-    seleccionadas[indices[0]] = true;
-    int ultimaSeleccionada = indices[0];
+**Entrada:**
+- `xs`: vector de enteros (longitud `n`) con posiciones posibles (en km) dentro de `[0, K]`.
+- `ps`: vector de enteros (longitud `n`) donde `ps[i] > 0` indica centenas de miles de víctimas atendidas en `xs[i]`.
+- `n ≥ 0` y `xs` está ordenado crecientemente.
 
-    for (int i = 1; i < indices.length; i++) {
-        int indiceActual = indices[i];
-        if (c[indiceActual] >= f[ultimaSeleccionada]) {
-            seleccionadas[indiceActual] = true;
-            ultimaSeleccionada = indiceActual;
-        } else {
-            seleccionadas[indiceActual] = false;
-        }
-    }
+**Restricción:**  
+No se pueden construir dos hospitales a una distancia de **5 km o menos**, es decir, si se selecciona `xs[i]`, no puede seleccionarse ningún `xs[j]` tal que `|xs[i] - xs[j]| ≤ 5`.
 
-    return seleccionadas;
-}
+---
 
-private static int[] ordenar(int[] arr) {
-    int[] indices = new int[arr.length];
-    for (int i = 0; i < arr.length; i++) {
-        indices[i] = i;
-    }
-    for (int i = 1; i < arr.length; i++) {
-        int j = i;
-        int temp = indices[i];
-        while (j > 0 && arr[indices[j - 1]] > arr[temp]) {
-            indices[j] = indices[j - 1];
-            j--;
-        }
-        indices[j] = temp;
-    }
-    return indices;
-}
-````
+### Poscondición
+
+**Condición de validez:**
+- Ningún par de posiciones seleccionadas está a 5 km o menos de distancia.
+- La suma de los `ps[i]` seleccionados es máxima entre todas las selecciones válidas.
+
+**Función objetivo:**  
+Maximizar la suma de `ps[i]` de las posiciones seleccionadas, representando el número total de víctimas atendidas.
+
+---
+
 
 ## Complejidad
 ### Algoritmo idealizado (seleccionarActividadesIdeal).
