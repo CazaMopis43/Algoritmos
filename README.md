@@ -1,6 +1,6 @@
 # Algoritmos Avanzados
 ## Práctica 3
-## Table of Contents
+## Tabla de contenidos
 - [Objetivos](#objetivos)
 - [Especificación del Problema](#especificación-del-problema)
 - [Técnica de Vuelta Atrás](#técnica-de-vuelta-atrás)
@@ -58,7 +58,7 @@ Raíz (nivel 0: posición xs[0]=1)
         (Rama omitida por violación)
 ```
 
-La parte omitida sigue el patrón binario, extendiéndose hasta `n` niveles, con podas por restricciones de distancia y cotas optimistas (suma restante <= mejor actual).
+
 ---
 ### b) Código de un algoritmo de vuelta atrás
 El algoritmo de vuelta atrás incorpora el diseño del árbol anterior, explorando recursivamente las decisiones de incluir o no cada posición. Incluye poda optimista basada en una cota superior de la suma restante y verifica la restricción de distancia solo con el último hospital colocado (ya que las posiciones están ordenadas). La cabecera es como se especifica:
@@ -118,153 +118,8 @@ private static void backtrackOptimizado(int[] xs, int[] ps, int posActual,
 }
 ```
 
-Este código se integra en la clase que contiene los algoritmos heurísticos de la práctica 2, como se muestra a continuación (clase completa para contexto):
+Este código se integra en la clase que contiene los algoritmos heurísticos de la práctica 2.
 
-```java
-import java.util.*;
-
-public class Alg1 {
-    // Variables globales para el algoritmo optimizado
-    private static int K;
-    private static int mejorSolucion;
-   
-    /**
-     * Algoritmo Greedy por Orden: selecciona hospitales en orden de posición
-     * respetando distancia mínima de 5 unidades.
-     */
-    public static int hospitalesGreedyPorOrden(int[] xs, int[] ps) {
-        if (xs == null || ps == null || xs.length == 0 || ps.length == 0 || xs.length != ps.length) {
-            return 0;
-        }
-       
-        int n = xs.length;
-        int total = 0;
-        int ultimaPos = -6; // Inicialmente, no hay conflicto
-       
-        for (int i = 0; i < n; i++) {
-            if (xs[i] - ultimaPos > 5) {
-                total += ps[i];
-                ultimaPos = xs[i];
-            }
-        }
-        return total;
-    }
-   
-    /**
-     * Algoritmo Greedy por Valor: selecciona el hospital con mayor curación
-     * y elimina los conflictivos (distancia <= 5).
-     */
-    public static int hospitalesGreedyPorValor(int[] xs, int[] ps) {
-        if (xs == null || ps == null || xs.length == 0 || ps.length == 0 || xs.length != ps.length) {
-            return 0;
-        }
-       
-        int n = xs.length;
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            indices.add(i);
-        }
-       
-        int total = 0;
-        while (!indices.isEmpty()) {
-            int maxIdx = -1;
-            int maxP = -1;
-            for (int idx : indices) {
-                if (ps[idx] > maxP) {
-                    maxP = ps[idx];
-                    maxIdx = idx;
-                }
-            }
-           
-            if (maxIdx == -1) break;
-            total += maxP;
-           
-            int pos = xs[maxIdx];
-            indices.removeIf(j -> Math.abs(xs[j] - pos) <= 5);
-        }
-        return total;
-    }
-   
-    /**
-     * Algoritmo Optimizado: Backtracking con poda optimista para encontrar
-     * la solución óptima respetando la restricción de distancia.
-     */
-    public static int hospitales(int[] xs, int[] ps) {
-        if (xs == null || ps == null || xs.length == 0 || ps.length == 0 || xs.length != ps.length) {
-            return 0;
-        }
-       
-        K = xs.length;
-        mejorSolucion = 0;
-       
-        // Solución inicial: el mejor hospital individual
-        for (int p : ps) {
-            mejorSolucion = Math.max(mejorSolucion, p);
-        }
-       
-        int[] solucion = new int[K];
-        backtrackOptimizado(xs, ps, 0, 0, 0, solucion);
-       
-        return mejorSolucion;
-    }
-   
-    private static void backtrackOptimizado(int[] xs, int[] ps, int posActual,
-                                          int numHospitales, int curaciones,
-                                          int[] solucion) {
-        // Caso base
-        if (numHospitales == K || posActual == xs.length) {
-            mejorSolucion = Math.max(mejorSolucion, curaciones);
-            return;
-        }
-       
-        // Poda optimista: cota superior restante
-        int cota = curaciones;
-        for (int i = posActual; i < xs.length && i < posActual + (K - numHospitales); i++) {
-            cota += ps[i];
-        }
-        if (cota <= mejorSolucion) return;
-       
-        // Verificar restricción de distancia con el último hospital colocado
-        boolean puedeColocar = true;
-        if (numHospitales > 0) {
-            int ultimaPosicion = solucion[numHospitales - 1];
-            if (Math.abs(xs[posActual] - xs[ultimaPosicion]) <= 5) {
-                puedeColocar = false;
-            }
-        }
-       
-        // No tomar esta posición
-        backtrackOptimizado(xs, ps, posActual + 1, numHospitales, curaciones, solucion);
-       
-        // Tomar esta posición (si se puede y mejora la solución)
-        if (puedeColocar && curaciones + ps[posActual] > mejorSolucion) {
-            solucion[numHospitales] = posActual;
-            backtrackOptimizado(xs, ps, posActual + 1, numHospitales + 1,
-                               curaciones + ps[posActual], solucion);
-        }
-    }
-   
-    // Método main para pruebas locales (opcional para Algorex)
-    public static void main(String[] args) {
-        int[] xs = {1, 3, 5, 7, 10, 12, 15, 18};
-        int[] ps = {10, 20, 15, 25, 30, 5, 35, 40};
-       
-        System.out.println("=== Comparación de Algoritmos ===");
-        System.out.println("Posiciones: " + Arrays.toString(xs));
-        System.out.println("Curaciones: " + Arrays.toString(ps));
-        System.out.println();
-       
-        int greedyOrden = hospitalesGreedyPorOrden(xs, ps);
-        int greedyValor = hospitalesGreedyPorValor(xs, ps);
-        int optimizado = hospitales(xs, ps);
-       
-        System.out.println("Greedy por Orden: " + greedyOrden);
-        System.out.println("Greedy por Valor: " + greedyValor);
-        System.out.println("Optimizado: " + optimizado);
-        System.out.println("Mejor solución: " + Math.max(greedyValor, Math.max(greedyOrden, optimizado)));
-    }
-}
-```
 ---
 ## Comparación de Optimalidad
 Se añade el algoritmo de vuelta atrás (`hospitales`) a la clase utilizada en la práctica 2, que incluye al menos dos algoritmos heurísticos (`hospitalesGreedyPorOrden` y `hospitalesGreedyPorValor`). Se compara la optimalidad de todos mediante experimentación.
@@ -307,6 +162,9 @@ Diagramas de resumen gráfico:
 Se modificó el algoritmo de vuelta atrás para incluir la verificación de distancia mínima con el último hospital colocado, que no estaba presente en la versión inicial. Esto aseguró que la solución respetara la restricción y fuera exacta. También se ajustó la poda optimista para considerar el número restante de hospitales (`K - numHospitales`).
 ---
 ## Uso de la IA
-
+Para esta práctica hemos utilizado la Inteligencia Artifical para hacer un informe más claro y formal.
 ## Conclusiones
-La realización de esta práctica ha permitido profundizar en la técnica de vuelta atrás, destacando su capacidad para garantizar soluciones óptimas mediante exploración exhaustiva con podas eficientes, aunque a costa de mayor complejidad computacional en comparación con heurísticos. La experiencia con AlgorEx fue positiva para validar la exactitud, aunque requirió ajustes en los algoritmos previos para resolver incidencias en la restricción de distancia. No se encontraron dificultades mayores, salvo la necesidad de optimizar la poda para instancias grandes (`n>20`). En general, la técnica de vuelta atrás se valora como esencial para problemas de optimización combinatoria donde la exactitud es prioritaria.
+
+Con esta práctica hemos podido adentrarnos más en el mundo de el backtracking y viendo como el uso de esta técnica nos garantiza soluciones siempre óptimas al recorrer todos los posibles casos que se pueden dar, eso sí, esta búsqueda exhaustiva conlleva una mayor complegidad y uso de recursos que sus versiones Voraces. En cuanto al analisis de soluciones, AlgorEx ha resultado otra vez fundamental a la hora de facilitar el análisis de resultados, gracias a la gran variedad de datos y gáficos que nos aporta.
+
+
