@@ -58,7 +58,7 @@ Raíz (nivel 0: posición xs[0]=1)
         (Rama omitida por violación)
 ```
 
-
+Adjuntamos una imagen de para que se vea más claro 
 ---
 ### b) Código de un algoritmo de vuelta atrás
 El algoritmo de vuelta atrás incorpora el diseño del árbol anterior, explorando recursivamente las decisiones de incluir o no cada posición. Incluye poda optimista basada en una cota superior de la suma restante y verifica la restricción de distancia solo con el último hospital colocado (ya que las posiciones están ordenadas). La cabecera es como se especifica:
@@ -162,7 +162,7 @@ Diagramas de resumen gráfico:
 Se modificó el algoritmo de vuelta atrás para incluir la verificación de distancia mínima con el último hospital colocado, que no estaba presente en la versión inicial. Esto aseguró que la solución respetara la restricción y fuera exacta. También se ajustó la poda optimista para considerar el número restante de hospitales (`K - numHospitales`).
 ---
 ## Uso de la IA
-Para esta práctica hemos utilizado la Inteligencia Artifical para hacer un informe más claro y formal.
+Para esta práctica hemos utilizado la Inteligencia Artifical para hacer un informe más claro y formal.Además hemos utilizado la inteligenci artificial para pasar nuestro boceto de árbol de una forma más compacta y que creemos que se verá mejor.
 ## Conclusiones
 
 Con esta práctica hemos podido adentrarnos más en el mundo de el backtracking y viendo como el uso de esta técnica nos garantiza soluciones siempre óptimas al recorrer todos los posibles casos que se pueden dar, eso sí, esta búsqueda exhaustiva conlleva una mayor complegidad y uso de recursos que sus versiones Voraces. En cuanto al analisis de soluciones, AlgorEx ha resultado otra vez fundamental a la hora de facilitar el análisis de resultados, gracias a la gran variedad de datos y gáficos que nos aporta.
