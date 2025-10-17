@@ -285,7 +285,7 @@ Según los resultados experimentales:
 - `hospitalesGreedyPorValor` también es exacto en este conjunto de datos, alcanzando el 100% de optimalidad.
 - `hospitalesGreedyPorOrden` es subóptimo, con una diferencia media del 30.45% respecto a la solución óptima.
 ---
-### c) Evidencias
+## c) Evidencias
 Tabla de resumen numérico:
 
 | Métrica                  | hospitalesGreedyPorOrden | hospitalesGreedyPorValor | hospitales |
@@ -303,7 +303,7 @@ Diagramas de resumen gráfico:
 - Valores medios y extremos: `hospitalesGreedyPorOrden` tiene un rango amplio (media 64%, extremos 0%-100%), mientras que los otros dos son consistentes (100%).
 - Medidas: La diferencia media subóptima de `hospitalesGreedyPorOrden` es 30.45%, con un máximo de 3.76%, mientras que `hospitales` tiene una diferencia media del 0.00%.
 ---
-### d) Incidencias
+## d) Incidencias
 Se modificó el algoritmo de vuelta atrás para incluir la verificación de distancia mínima con el último hospital colocado, que no estaba presente en la versión inicial. Esto aseguró que la solución respetara la restricción y fuera exacta. También se ajustó la poda optimista para considerar el número restante de hospitales (`K - numHospitales`).
 ---
 ## Uso de la IA
