@@ -1,5 +1,5 @@
 # Algoritmos Avanzados
-## Práctica 3a
+## Práctica 3
 ## Table of Contents
 - [Objetivos](#objetivos)
 - [Especificación del Problema](#especificación-del-problema)
