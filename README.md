@@ -2,6 +2,7 @@
 
 **Asignatura:** Algoritmos Avanzados  
 **Curso:** 2025/2026
+
 **Marc Burgos Ucendo,Alberto Sastre Zorrilla**
 ---
 ## 1. Backtracking
