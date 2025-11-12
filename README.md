@@ -29,29 +29,27 @@ private static int buscarBacktracking(int[] ps, int indice, int[] siguienteValid
 ```
 ## 2. Función de Cota Superior para la Poda
 
-Para resolver este problema de **maximización** (maximizar la suma de valores), la estrategia de poda requiere definir una **Cota Superior ($\text{UB}$)**. Esta cota debe representar el máximo valor que la solución óptima de la subrama actual podría alcanzar.
+Para resolver este problema de **maximización** (maximizar la suma de valores), la estrategia de poda requiere definir una **Cota Superior (UB)**. Esta cota debe representar el máximo valor que la solución óptima de la subrama actual podría alcanzar.
 
-#### (1) Definición de la función de Cota Superior
+####  Definición de la función de Cota Superior
 
 Se utiliza una **relajación** del problema que ignora las restricciones de incompatibilidad para todos los elementos futuros.
 
 Sea:
 
-* $\text{acumulado}$: La suma de valores de los elementos ya seleccionados en el camino al nodo actual.
+- acumulado: La suma de valores de los elementos ya seleccionados en el camino al nodo actual.  
+- sumaSufijos[i]: La suma total de los valores ps[k] para todos los índices k ≥ i (es decir, la suma de todos los valores restantes, independientemente de su posición).
 
-* $\text{sumaSufijos}[i]$: La suma total de los valores $ps[k]$ para todos los índices $k \ge i$ (es decir, la suma de todos los valores restantes, independientemente de su posición).
+La cota superior UB(i) para un nodo en el índice i se define como:
 
-La cota superior $\text{UB}(i)$ para un nodo en el índice $i$ se define como:
+UB(i) = acumulado + sumaSufijos[i]
 
-$$
-\text{UB}(i) = \text{acumulado} + \text{sumaSufijos}[i]
-$$
+java
+Copiar código
 
-**Criterio de Poda:** Se poda la rama si la cota superior del nodo ($\text{UB}$) es menor o igual que la mejor solución (`mejor`) encontrada hasta el momento:
+**Criterio de Poda:** Se poda la rama si la cota superior del nodo (UB) es menor o igual que la mejor solución (mejor) encontrada hasta el momento:
 
-$$
-\text{Si } \text{UB}(i) \le \text{mejor} \text{, podar.}
-$$
+Si UB(i) <= mejor, podar.
 ```java
 public static int branchAndBound(int[] xs, int[] ps) {
     if (xs == null || ps == null || xs.length != ps.length || xs.length == 0) return 0;
