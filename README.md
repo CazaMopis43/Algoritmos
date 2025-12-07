@@ -265,4 +265,5 @@ Este gráfico ilustra de forma contundente la **superioridad en eficiencia** de 
 ## 6. Conclusiones
 
 La Programación Dinámica es la técnica óptima para resolver este problema, ya que transforma la complejidad exponencial $\mathbf{O(2^n)}$ del enfoque recursivo puro en una complejidad polinomial $\mathbf{O(n^2)}$, garantizando siempre la solución óptima.
+
 Uso de la IA:Se ha utilizado la Ia para hacer un informe más profesional y pulido.
