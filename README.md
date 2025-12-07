@@ -182,7 +182,87 @@ Salida:
 Posiciones seleccionadas:
 6 12 
 Total víctimas atendidas: 10 cientos de mil
-## 4. Comparación de Optimalidad
+#### 4. Comparación de optimalidad
+
+##### a) Material del experimento
+Se han ejecutado 100 instancias aleatorias con las siguientes características:
+- n ∈ [12, 20] (valores medios-altos para detectar diferencias)
+- Posiciones xs: enteros ordenados crecientes entre 0 y 3000
+- Víctimas p_i: distribución uniforme entre 1 y 100
+- Distancia mínima K = 5 (valor coherente con el ejemplo oficial del enunciado)
+
+Algoritmos comparados:
+- backtracking (vuelta atrás exacta)
+- branchAndBound (ramificación y poda exacta)
+- dp y hospitales (programación dinámica Bottom-Up, misma implementación)
+- greedyOrden (voraz por orden de aparición)
+- greedyValor (voraz por mayor número de víctimas)
+
+##### b) Conclusión
+Los algoritmos **backtracking, branchAndBound, dp y hospitales** son **exactos**: obtienen la solución óptima en el **100% de los casos**.  
+Los algoritmos voraces muestran comportamientos opuestos en este conjunto de datos:  
+- **greedyOrden** falla sistemáticamente (0% óptimas)  
+- **greedyValor** acierta en el 100% de las instancias generadas  
+Esto demuestra claramente que **los métodos voraces no garantizan optimalidad en general**, aunque uno de ellos haya tenido suerte con la distribución de datos utilizada.
+
+##### c) Evidencias
+
+**Tabla resumen numérico**
+
+| Medida                        | backtracking | branchAndBound | dp     | greedyOrden | greedyValor | hospitales |
+|-------------------------------|--------------|----------------|--------|-------------|-------------|------------|
+| Núm. ejecuciones              | 100          | 100            | 100    | 100         | 100         | 100        |
+| % Soluciones subóptimas       | 0.00%        | 0.00%          | 0.00%  | 100.00%     | 0.00%       | 0.00%      |
+| % Soluciones óptimas          | 100.00%      | 100.00%        | 100.00%| 0.00%       | 100.00%     | 100.00%    |
+| % Soluciones sobróptimas      | 0.00%        | 0.00%          | 0.00%  | 0.00%       | 0.00%       | 0.00%      |
+| Diferencia media subóptima    | 0.0          | 0.0            | 0.0    | 59.20%      | 0.0         | 0.0        |
+| Diferencia máxima subóptima   | 0            | 0              | 0      | 32.01%      | 0           | 0          |
+
+**Resumen gráfico** (ver figuras adjuntas):
+
+Figura 1 – Porcentaje de resultados óptimos por algoritmo  
+→ Los cuatro métodos exactos alcanzan el 100%.  
+→ greedyValor también alcanza el 100% (coincidencia afortunada con los datos).  
+→ greedyOrden falla en todos los casos.
+
+Figura 2 – Valores medios y extremos de la diferencia respecto al óptimo  
+→ Solo greedyOrden presenta errores significativos (media ~59%, máximo 32%).
+
+##### d) Incidencias
+Durante el desarrollo se detectaron inconsistencias iniciales (porcentajes de optimalidad inferiores al 100% en métodos exactos) debidas a diferencias en la interpretación de la restricción de distancia (uso de > K en lugar de >= K en algunos algoritmos). Tras unificar la condición **xs[j] - xs[i] >= K** en todos los métodos y fijar K=5 de forma global, se alcanzó el **100% de optimalidad** en los cuatro algoritmos exactos, tal y como exige la teoría y el enunciado de la práctica.
+
+#### 5. Comparación de eficiencia
+
+##### a) Conclusión
+- Los algoritmos **voraces** (greedyOrden y greedyValor) son **claramente los más rápidos**, con tiempos medios inferiores a **0.01 ms** en todos los casos.
+- La **programación dinámica (dp y hospitales)** es el método exacto más eficiente: tiempo medio de **0.002–0.003 ms**, prácticamente indistinguible de los voraces.
+- **Branch & Bound** es significativamente más lento que DP (≈ 5–10 veces), con tiempo medio de **0.11 ms**.
+- **Backtracking** es con diferencia el menos eficiente: tiempo máximo de **0.209 ms** y tiempo medio de **0.032 ms**, más de **10 veces más lento** que la programación dinámica.
+
+**Conclusión final**: la programación dinámica ofrece el **mejor compromiso** entre optimalidad (100%) y eficiencia (casi igual que los voraces), convirtiéndose en la técnica claramente superior para este problema.
+
+##### b) Evidencias
+
+**Tabla resumen numérico – Tiempos de ejecución (100 ejecuciones, n ∈ [12,20])**
+
+| Medida                   | backtracking | branchAndBound | dp       | greedyOrden | greedyValor | hospitales |
+|--------------------------|--------------|----------------|----------|-------------|-------------|------------|
+| Núm. ejecuciones         | 100          | 100            | 100      | 100         | 100         | 100        |
+| Tiempo máximo            | 0.209 ms     | 0.063 ms       | 0.020 ms | 0.026 ms    | 0.105 ms    | 0.027 ms   |
+| Tiempo medio             | 0.032 ms     | 0.011 ms       | 0.002 ms | 0.001 ms    | 0.009 ms    | 0.003 ms   |
+| Tiempo mínimo            | 0.007 ms     | 0.003 ms       | 0.000 ms | 0.000 ms    | 0.002 ms    | 0.000 ms   |
+
+**Resumen gráfico** (ver figura adjunta):
+
+Figura 3 – Tiempos de ejecución medios y extremos (escala lineal)  
+→ Se observa claramente:
+- Backtracking: barra roja alta y ancha (peor rendimiento).
+- Branch & Bound: intermedio.
+- dp y hospitales: prácticamente en el eje (casi 0 ms).
+- Ambos voraces: también casi en cero, pero con algo más de variabilidad.
+
+Este gráfico ilustra de forma contundente la **superioridad en eficiencia** de la programación dinámica frente a los otros métodos exactos, y su competitividad frente a los heurísticos.
 ## 6. Conclusiones
 
-La Programación Dinámica es la técnica óptima para resolver este problema, ya que transforma la complejidad exponencial $\mathbf{O(2^n)}$ del enfoque recursivo puro en una complejidad polinomial $\mathbf{O(n^2)}$, garantizando siempre la solución óptima.Uso de GenIA:No se ha utilizado ninguna herramienta de inteligencia artificial generativa (GenIA) en la elaboración del código ni del informe.
+La Programación Dinámica es la técnica óptima para resolver este problema, ya que transforma la complejidad exponencial $\mathbf{O(2^n)}$ del enfoque recursivo puro en una complejidad polinomial $\mathbf{O(n^2)}$, garantizando siempre la solución óptima.
+Uso de la IA:Se ha utilizado la Ia para hacer un informe más profesional y pulido.
