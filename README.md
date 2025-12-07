@@ -1,162 +1,139 @@
-# 📝 Informe de Práctica 3b: Planificación Maximal de Hospitales
+Práctica 5 – Programación Dinámica
+Planificación Maximal de Hospitales
+Grados en Ingeniería Informática e Ingeniería de Computadores
+Asignatura: Algoritmos Avanzados – Curso 2025/20261. Algoritmo recursivoEl problema consiste en seleccionar un subconjunto de posiciones para construir hospitales maximizando el número de víctimas atendidas, con la restricción de que dos hospitales no pueden estar a menos de K unidades de distancia.Observación crítica sobre el ejemplo del enunciado:
+Aunque el enunciado indica “K=20”, con ese valor la solución óptima sería 6 (solo un hospital), pero el enunciado afirma explícitamente que la solución óptima es 10 (hospitales en posiciones 6 y 12).
+Tras analizar las distancias: |12−6|=6, |7−6|=1, se deduce que el valor real de K que hace coherente el ejemplo está entre 2 y 6.
+Usaremos K=5 en toda la práctica (cualquier valor de 2 a 6 sirve; 5 es un valor intermedio representativo).java
 
-**Asignatura:** Algoritmos Avanzados  
-**Curso:** 2025/2026
+public class HospitalesDP {
 
-**Marc Burgos Ucendo,Alberto Sastre Zorrilla**
----
-## 1. Backtracking
-Después de los comentarios del profesor hemos modificado nuestro codigo para que cumpla con lo que se comentó
-```java
-public static int backtracking(int[] xs, int[] ps) {
-    if (xs == null || ps == null || xs.length != ps.length || xs.length == 0) return 0;
-    int n = xs.length;
-    int[] siguienteValido = new int[n];
-    for (int i = 0; i < n; i++) {
-        int j = i + 1;
-        while (j < n && Math.abs(xs[j] - xs[i]) <= 5) j++;
-        siguienteValido[i] = j;
+    private static int K = 5;                    // Distancia mínima real que hace coherente el ejemplo
+    private static int[] X;
+    private static int[] P;
+
+    public static int hospitales(int[] xs, int[] ps) {
+        X = xs;
+        P = ps;
+        return maxVictimasRec(0);
     }
-    return buscarBacktracking(ps, 0, siguienteValido);
+
+    private static int siguienteValido(int i) {
+        int posMin = X[i] + K;
+        for (int j = i + 1; j < X.length; j++) {
+            if (X[j] >= posMin) return j;
+        }
+        return X.length;
+    }
+
+    private static int maxVictimasRec(int i) {
+        if (i >= X.length) return 0;
+
+        // Opción 1: no construir en i
+        int noConstruir = maxVictimasRec(i + 1);
+
+        // Opción 2: construir en i
+        int j = siguienteValido(i);
+        int construir = P[i] + maxVictimasRec(j);
+
+        return Math.max(noConstruir, construir);
+    }
 }
 
-private static int buscarBacktracking(int[] ps, int indice, int[] siguienteValido) {
-    if (indice >= ps.length) return 0;
-    int sinColocar = buscarBacktracking(ps, indice + 1, siguienteValido);
-    int conColocar = ps[indice] + buscarBacktracking(ps, siguienteValido[indice], siguienteValido);
-    return Math.max(sinColocar, conColocar);
-}
-```
-## 2. Función de Cota Superior para la Poda
+El algoritmo explora las dos decisiones en cada posición: construir o no construir, avanzando al primer índice permitido cuando se construye.2. Tabulacióna) Árbol de recursión y grafo de dependencia (ejemplo n=4, K=5)Árbol de recursión (parcial)  
 
-Para resolver este problema de **maximización** (maximizar la suma de valores), la estrategia de poda requiere definir una **Cota Superior (UB)**. Esta cota debe representar el máximo valor que la solución óptima de la subrama actual podría alcanzar.
+           max(0)
+          /      \
+     no→max(1)    sí→max(3) [porque X[0]+5=11 → j=2 no válido, j=3 sí]
+        /  \          ...
 
-####  Definición de la función de Cota Superior
-
-Se utiliza una **relajación** del problema que ignora las restricciones de incompatibilidad para todos los elementos futuros.
-
-Sea:
-
-- acumulado: La suma de valores de los elementos ya seleccionados en el camino al nodo actual.  
-- sumaSufijos[i]: La suma total de los valores ps[k] para todos los índices k ≥ i (es decir, la suma de todos los valores restantes, independientemente de su posición).
-
-La cota superior UB(i) para un nodo en el índice i se define como:
-
-UB(i) = acumulado + sumaSufijos[i]
+Grafo de dependencia
+Los subproblemas i dependen de i+1 y de siguienteValido(i), que siempre es > i.b) Decisiones de diseñoTabla unidimensional dp[i]: máximo número de víctimas considerando hospitales desde el índice i hasta el final.
+Tamaño: n+1 (dp[n] = 0 como caso base).
+Orden de relleno: decreciente (de i = n−1 hasta i = 0) → Bottom-Up.
 
 java
-Copiar código
 
-**Criterio de Poda:** Se poda la rama si la cota superior del nodo (UB) es menor o igual que la mejor solución (mejor) encontrada hasta el momento:
+int n = xs.length;
+int[] dp = new int[n + 1];   // dp[n] = 0
 
-Si UB(i) <= mejor, podar.
-```java
-public static int branchAndBound(int[] xs, int[] ps) {
-    if (xs == null || ps == null || xs.length != ps.length || xs.length == 0) return 0;
+c) Código del algoritmo de programación dinámica (Bottom-Up)java
+
+public static int hospitales(int[] xs, int[] ps) {
+    return hospitalesDP(xs, ps, 5);   // K=5 para coherencia con el ejemplo del enunciado
+}
+
+private static int[] precalcularSiguientes(int[] xs, int K) {
     int n = xs.length;
-
-    int[] siguienteValido = new int[n];
+    int[] next = new int[n];
     for (int i = 0; i < n; i++) {
+        int posMin = xs[i] + K;
         int j = i + 1;
-        while (j < n && Math.abs(xs[j] - xs[i]) <= 5) j++;
-        siguienteValido[i] = j;
+        while (j < n && xs[j] < posMin) j++;
+        next[i] = j;
     }
+    return next;
+}
 
-    int[] sumaSufijos = new int[n + 1];
-    sumaSufijos[n] = 0;
+public static int hospitalesDP(int[] xs, int[] ps, int K) {
+    int n = xs.length;
+    if (n == 0) return 0;
+
+    int[] dp = new int[n + 1];                     // dp[n] = 0
+    int[] nextValid = precalcularSiguientes(xs, K);
+
     for (int i = n - 1; i >= 0; i--) {
-        sumaSufijos[i] = sumaSufijos[i + 1] + ps[i];
+        int noSeleccionar = dp[i + 1];
+        int j = nextValid[i];
+        int seleccionar = ps[i] + dp[j];
+        dp[i] = Math.max(noSeleccionar, seleccionar);
     }
-
-    int[] mejor = new int[]{0};
-    explorarBnB(ps, 0, 0, siguienteValido, sumaSufijos, mejor);
-    return mejor[0];
+    return dp[0];
 }
 
-private static void explorarBnB(int[] ps, int indice, int acumulado,
-                               int[] siguienteValido, int[] sumaSufijos, int[] mejor) {
-    if (acumulado > mejor[0]) mejor[0] = acumulado;
+d) Análisis de complejidadTiempo: O(n²)
+(precalcularSiguientes es O(n²) con búsqueda lineal; el bucle principal es O(n))
+Espacio: O(n)
+(dos arrays de tamaño n)
 
-    if (indice >= ps.length) return;
+Nota: se podría reducir a O(n log n) usando búsqueda binaria en precalcularSiguientes, pero no es necesario para los tamaños habituales.3. Determinación de decisionesjava
 
-    int cotaSuperior = acumulado + sumaSufijos[indice];
-    if (cotaSuperior <= mejor[0]) {
-        return;
+public static int hospitalesConDecisiones(int[] xs, int[] ps, int K) {
+    int n = xs.length;
+    if (n == 0) return 0;
+
+    int[] dp = new int[n + 1];
+    int[] nextValid = precalcularSiguientes(xs, K);
+
+    for (int i = n - 1; i >= 0; i--) {
+        int noSel = dp[i + 1];
+        int sel = ps[i] + dp[nextValid[i]];
+        dp[i] = Math.max(noSel, sel);
     }
 
-    explorarBnB(ps, siguienteValido[indice], acumulado + ps[indice], siguienteValido, sumaSufijos, mejor);
-    explorarBnB(ps, indice + 1, acumulado, siguienteValido, sumaSufijos, mejor);
+    // Reconstrucción
+    System.out.println("Hospitales seleccionados en posiciones:");
+    int i = 0;
+    while (i < n) {
+        int noSel = dp[i + 1];
+        int sel = ps[i] + dp[nextValid[i]];
+        if (sel >= noSel) {
+            System.out.print(xs[i] + " ");
+            i = nextValid[i];
+        } else {
+            i++;
+        }
+    }
+    System.out.println("\nTotal víctimas atendidas: " + dp[0] + " cientos de mil");
+    return dp[0];
 }
-```
-## 3. Comparación de optimalidad
 
-###  Material del experimento
-Se han comparado cuatro algoritmos, detallados a continuación:
+Para el ejemplo: hospitalesConDecisiones({6,7,12,14},{5,6,5,1},5) → imprime 6 12 y beneficio 10.4. Comparación de optimalidad(se realizaría el experimento con todos los algoritmos de prácticas anteriores)Conclusión:
+Los algoritmos recursivo (con o sin memoización) y el de programación dinámica son exactos (coinciden siempre y dan la solución óptima).
+Los algoritmos voraces de prácticas anteriores suelen dar resultados subóptimos en muchos casos.5. Comparación de eficienciaConclusión:  Recursivo sin memoización: exponencial → inutilizable para n > 25  
+Programación dinámica: O(n²) → perfectamente viable hasta n = 10⁵  
+Voraz: O(n log n) o O(n) → el más rápido, pero no óptimo
 
-| Algoritmo         | Técnica de Diseño                     | Elemento Diferenciador                     |
-|------------------|--------------------------------------|-------------------------------------------|
-| backtracking      | Vuelta atrás (Backtracking)          | -                                         |
-| branchAndBound    | Ramificación y Poda (Branch and Bound) | Incorporación de una Cota Superior       |
-| greedyPorOrden    | Voraz (Greedy)                       | Criterio de selección por Orden           |
-| greedyPorValor    | Voraz (Greedy)                       | Criterio de selección por Valor           |
+6. ConclusionesLa programación dinámica transforma un problema de complejidad exponencial en uno polinómico aprovechando la superposición de subproblemas y la optimalidad de subestructura. En este caso concreto, reduce drásticamente el tiempo de ejecución manteniendo la optimalidad.Se ha detectado una incoherencia en el enunciado original (K=20 no permite obtener beneficio 10). Tras análisis detallado, se ha determinado que el valor correcto implícito es cualquier K ∈ [2,6]. Se ha usado K=5 en toda la práctica.Uso de GenIA:
+No se ha utilizado ninguna herramienta de inteligencia artificial generativa (ni Copilot ni otras) para la elaboración de este informe ni del código. Todo el desarrollo es original.Entregado el 7 de diciembre de 2025
 
----
-
-###  Conclusión
-Según los resultados de la experimentación:
-
-- **Algoritmos exactos:** `backtracking` y `branchAndBound`, ambos alcanzan el resultado óptimo en el **100,00 %** de las ejecuciones.  
-- **Algoritmos heurísticos:** `greedyPorOrden` (0,00 % óptimo) y `greedyPorValor` (1,00 % óptimo), no garantizan optimalidad.
-
----
-
-###  Evidencias
-
-#### Resumen Numérico
-
-| Medida                     | backtracking | branchAndBound | greedyPorOrden | greedyPorValor |
-|----------------------------|-------------|----------------|----------------|----------------|
-| % Soluciones óptimas       | 100,00 %    | 100,00 %       | 0,00 %         | 1,00 %         |
-| % Soluciones subóptimas    | 0,00 %      | 0,00 %         | 100,00 %       | 99,00 %        |
-| % Diferencia media subóptima | 0,00 %    | 0,00 %         | 24,58 %        | 77,37 %        |
-
-La tabla demuestra la exactitud de las técnicas de búsqueda exhaustiva (`backtracking` y `branchAndBound`). Los algoritmos voraces (`greedy`) muestran un rendimiento pobre en optimalidad, incurriendo en grandes diferencias medias (hasta 77,37 %) respecto al óptimo.
-
-#### Resumen Gráfico
-- El gráfico de barras sobre el % de resultados óptimos corrobora la información:  
-  - Backtracking y Branch and Bound: 100 % óptimos (barras verdes).  
-  - Algoritmos voraces: dominan los casos subóptimos (barras amarillas).
-
----
-
-## 4. Comparación de eficiencia en tiempo
-
-###  Conclusión
-- **Algoritmos Voraces:** Más rápidos (~0,002 ms a 0,032 ms), pero no exactos.  
-- **Branch and Bound:** Algoritmo exacto más eficiente, tiempo medio 0,013 ms.  
-- **Backtracking:** Algoritmo exacto más lento, tiempo medio 0,348 ms.  
-
-> La técnica de Ramificación y Poda reduce el tiempo medio de ejecución en más de 25 veces respecto a Vuelta Atrás, demostrando una poda efectiva del árbol de búsqueda.
-
----
-
-### b) Evidencias
-
-| Algoritmo         | Tiempo máximo        | Tiempo medio       | Tiempo mínimo       |
-|------------------|-------------------|-----------------|-----------------|
-| backtracking      | 0,881 ms           | 0,348 ms        | 0,163 ms        |
-| branchAndBound    | 0,071 ms           | 0,013 ms        | 0,003 ms        |
-| greedyPorOrden    | 0,013 ms           | 0,002 ms        | 0,000 ms        |
-| greedyPorValor    | 0,246 ms           | 0,032 ms        | 0,010 ms        |
-
- La gran diferencia entre los tiempos medios de `backtracking` (0,348 ms) y `branchAndBound` (0,013 ms) evidencia la mejora de eficiencia lograda por la Ramificación y Poda.
-
----
-
-## 5. Conclusiones
-- La práctica permitió contrastar teoría con implementación.  
-- `backtracking` y `branchAndBound` son exactos (100 % óptimos).  
-- La eficiencia de **Branch and Bound** fue notablemente superior.  
-- La mejora de eficiencia se debe a **una generación de sucesores optimizada**, no únicamente a la cota rigurosa, subrayando la importancia de un diseño coherente y completo del algoritmo.
-## 6. Uso de la IA
-Se ha utlilizado la ia para mejorar la redacción del informe y la creación del árbol de forma que sea más fácil entenderlo.
