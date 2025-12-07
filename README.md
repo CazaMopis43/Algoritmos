@@ -2,6 +2,7 @@
 ## Planificación Maximal de Hospitales  
 **Grados en Ingeniería Informática e Ingeniería de Computadores**  
 **Asignatura: Algoritmos Avanzados – Curso 2025/2026**
+**Marc Burgos Ucendo, Alberto Sastre Zorrilla**
 
 ---
 
@@ -9,19 +10,10 @@
 
 El objetivo es maximizar el número de víctimas atendidas construyendo hospitales en un subconjunto de posiciones dadas, con la restricción de que la distancia entre dos hospitales debe ser al menos **K**.
 
-**Observación crítica sobre el ejemplo del enunciado**:  
-El enunciado indica “K=20” y afirma que la solución óptima es 10 (hospitales en posiciones 6 y 12). Sin embargo, con K=20 solo se podría construir un hospital (máximo beneficio = 6).  
-Tras analizar las distancias:  
-- |12 − 6| = 6 → para que 6 y 12 sean compatibles, debe cumplirse K ≤ 6  
-- |7 − 6| = 1 → para que 6 y 7 no sean compatibles, debe cumplirse K > 1  
-
-**Conclusión**: el valor real implícito de K que hace coherente el ejemplo está en el rango **[2, 6]**.  
-En toda la práctica usaremos **K = 5** (valor intermedio representativo).
-
 ```java
 public class HospitalesDP {
 
-    private static final int K = 5;  // Valor coherente con el ejemplo del enunciado
+    private static final int K = 5; 
     private static int[] X;
     private static int[] P;
 
@@ -38,32 +30,29 @@ public class HospitalesDP {
                 return j;
             }
         }
-        return X.length; // no hay más posiciones válidas
+        return X.length; 
     }
 
     private static int maxVictimasRecursivo(int i) {
         if (i >= X.length) return 0;
-
-        // Opción 1: no construir hospital en la posición i
+ 
         int noConstruir = maxVictimasRecursivo(i + 1);
 
-        // Opción 2: construir hospital en i → saltar a la primera posición válida después
         int j = siguienteValido(i);
         int construir = P[i] + maxVictimasRecursivo(j);
 
         return Math.max(noConstruir, construir);
     }
 }
+```
 
-La recursión explora sistemáticamente las dos decisiones posibles en cada posición, avanzando al siguiente subproblema permitido cuando se construye un hospital.2. Tabulacióna) Árbol de recursión y grafo de dependencia (ejemplo con n=4, K=5)Árbol de recursión (parcial)  
+La recursión explora sistemáticamente las dos decisiones posibles en cada posición, avanzando al siguiente subproblema permitido cuando se construye un hospital.
+2. Tabulación
+a) Árbol de recursión y grafo de dependencia (ejemplo con n=4, K=5)Árbol de recursión (parcial)  
 
-                max(0)
-               /        \
-        no→ max(1)      sí→ max(3)   ← X[0]+5=11 → siguiente válido es índice 2? No (12<11? No), índice 3 sí (14≥11)
-             /   \
-         no→max(2) sí→max(4)=0
+               
 
-Grafo de dependencia
+b)Grafo de dependencia
 Cada subproblema i depende exclusivamente de:i+1 (decisión de no seleccionar)
 j = siguienteValido(i) (decisión de seleccionar), donde j > i
 
@@ -77,7 +66,7 @@ Orden de relleno: decreciente (i = n−1 → 0) → Bottom-Up
 Garantiza que cuando calculamos dp[i], tanto dp[i+1] como dp[j] (j > i) ya están calculados.
 
 c) Código del algoritmo de programación dinámica (Bottom-Up)java
-
+```java
 public static int hospitales(int[] xs, int[] ps) {
     return hospitalesDP(xs, ps, 5);  // K=5 para coherencia con el ejemplo oficial
 }
@@ -109,7 +98,7 @@ public static int hospitalesDP(int[] xs, int[] ps, int K) {
     }
     return dp[0];
 }
-
+```
 d) Análisis de complejidad en tiempo y espacioFase
 Operaciones
 Coste
@@ -129,8 +118,10 @@ nextValid[] → tamaño n → O(n)
 Variables auxiliares → O(1)
 
 Complejidad en espacio: O(n)
-(No se puede reducir por debajo de O(n) sin perder la capacidad de reconstruir la solución)3. Determinación de decisionesjava
+(No se puede reducir por debajo de O(n) sin perder la capacidad de reconstruir la solución)
 
+3. Determinación de decisiones
+```java
 public static void hospitalesConDecisiones(int[] xs, int[] ps, int K) {
     int n = xs.length;
     if (n == 0) return;
@@ -161,7 +152,7 @@ public static void hospitalesConDecisiones(int[] xs, int[] ps, int K) {
     }
     System.out.println("\nTotal víctimas atendidas: " + dp[0] + " cientos de mil");
 }
-
+```
 Ejemplo de ejecución:java
 
 hospitalesConDecisiones(new int[]{6,7,12,14}, new int[]{5,6,5,1}, 5);
