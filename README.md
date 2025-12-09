@@ -121,23 +121,77 @@ public static int hospitalesDP(int[] xs, int[] ps, int K) {
 ```
 d) Análisis de Complejidad en Tiempo y Espacio 🔬
 
-1. Análisis del Algoritmo Recursivo (sin Programación Dinámica) MétricaComplejidadJustificación
+1. Algoritmo Recursivo Puro (Sin Memoización)
 
-Tiempo:O(2^n) El número de llamadas crece exponencialmente con $n$.
+El problema de la Planificación Maximal de Hospitales, resuelto de forma puramente recursiva, es similar al problema de la Mochila 0/1 o de la Secuencia Máxima de Tareas.
 
-Espacio:O(n) Dado por la profundidad máxima de la pila de llamadas.
+Complejidad Temporal (T(n)):
 
-2. Análisis del Algoritmo de Programación Dinámica (Tabulación)
+En cada paso i, la función maxVictimasRecursivo(i) realiza una elección binaria (seleccionar xᵢ o no seleccionar xᵢ).
 
-La complejidad se divide en dos fases: el pre-cálculo y el relleno de la tabla DP.
+T(n) = T(i+1) + T(j) + O(1 + C_siguiente)
 
-Pre-cálculo (precalcularSiguientes): O(n2),Bucle externo (n) multiplicado por la búsqueda secuencial interna (O(n) en el peor caso). Total: O(n2).
+Donde:
+- n es el número de hospitales,
+- j es el índice del próximo hospital válido (j > i+1),
+- y C_siguiente es el coste de la función siguienteValido (que es O(n) en el peor caso).
 
-Relleno DP: O(n),n iteraciones con operaciones de tiempo constante O(1).
+Peor Caso:
+Cuando K es muy pequeño (por ejemplo, K=1), casi todas las posiciones son válidas, y j ≈ i+2.  
+La relación de recurrencia se acerca a:
 
-Tiempo Total:O(n2),Dominado por la fase de pre-cálculo.
+T(n) ≈ 2T(n-1) + O(n)
 
-Espacio Total:O(n),Requiere los arrays auxiliares dp[n+1] y nextValid[n].
+Resultado:
+El término exponencial domina.  
+El número de subproblemas únicos es O(n), pero al resolver los subproblemas repetidamente sin almacenamiento (memoización), el tiempo total de ejecución es exponencial, del orden de **O(2ⁿ)**.
+
+Complejidad Espacial (S(n)):
+
+El espacio utilizado está determinado por la profundidad máxima de la pila de llamadas recursivas.  
+Dado que en cada llamada se avanza al menos un índice (de i a i+1 o a j > i), la profundidad máxima de la recursión es lineal con el número de hospitales n.
+
+Resultado:  
+La complejidad espacial es **O(n)**.
+
+
+2. Algoritmo de Programación Dinámica (Tabulación)
+
+La Programación Dinámica resuelve el problema calculando una tabla unidimensional de n+1 estados (dp[i]) de forma iterativa.
+
+Complejidad Temporal (T(n)):
+
+La complejidad se determina por la suma de la fase de pre-cálculo y la fase de relleno DP.
+
+Fase de Pre-cálculo (precalcularSiguientes):
+- Se ejecuta un bucle externo n veces (de i=0 a n-1).
+- Dentro, la búsqueda secuencial (while) para encontrar el índice j puede recorrer hasta O(n) elementos.
+
+Coste:  
+∑_{i=0}^{n-1} O(n) = **O(n²)**
+
+Fase de Relleno DP (Bottom-Up):
+- Se ejecuta un bucle n veces (de i=n-1 a 0).
+- Dentro del bucle, todas las operaciones (acceso a arrays, comparación Math.max) son de tiempo constante O(1).
+
+Coste:  
+∑_{i=0}^{n-1} O(1) = **O(n)**
+
+Tiempo Total:  
+El coste total es O(n²) + O(n). El término cuadrático domina.
+
+Resultado:  
+La complejidad temporal es **O(n²)**.
+
+Complejidad Espacial (S(n)):
+
+El espacio auxiliar es el requerido para almacenar las soluciones de los subproblemas y las transiciones.
+
+- Tabla DP (dp[]): n+1 celdas
+- Tabla de Transiciones (nextValid[]): n celdas
+
+Resultado:  
+La complejidad espacial es **O(n)**.
 
 3. Determinación de Decisiones
 
@@ -266,4 +320,8 @@ Este gráfico ilustra de forma contundente la **superioridad en eficiencia** de 
 
 La Programación Dinámica es la técnica óptima para resolver este problema, ya que transforma la complejidad exponencial $\mathbf{O(2^n)}$ del enfoque recursivo puro en una complejidad polinomial $\mathbf{O(n^2)}$, garantizando siempre la solución óptima.
 
-Uso de la IA:Se ha utilizado la Ia para hacer un informe más profesional y pulido.
+Cabe destacar también, que el Árbol de Recursión está hecho a mano ya que ambos integrantes del
+grupo hemos tenido problemas con el SRec que nos han impedido poder sacar un análisis de datos
+desde el propio programa.
+
+Uso de la IA:Se ha utilizado la Ia para hacer un informe más profesional y pulido y para analizar un el código ya que no hemos podido usar el SRec para esta función.
